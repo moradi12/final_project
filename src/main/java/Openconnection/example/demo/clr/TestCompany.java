@@ -12,6 +12,8 @@ import org.springframework.stereotype.Component;
 
 import java.sql.Date;
 
+//TODO ; DELETE IS NOT WORKING FROM SWAGGER FOR SOME REASON
+
 @RequiredArgsConstructor
 @Component
 @Order(1)
@@ -199,12 +201,11 @@ public class TestCompany implements CommandLineRunner {
                 System.out.println("Error occurred while deleting company: " + e.getMessage());
             }
             System.out.println();
-            System.out.println();
 
             System.out.println("Remaining Companies:");
             companyService.getAllCompanies().forEach(company -> System.out.println(company + "\n"));
         } catch (Exception e) {
-            System.out.println("Error occurred: " + e.getMessage());
+            System.out.println("Error occurred:" + e.getMessage());
         }
     }
 }

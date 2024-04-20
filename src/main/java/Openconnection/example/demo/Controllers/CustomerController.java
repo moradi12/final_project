@@ -10,9 +10,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-//get system coupon
-//get customer coupon
-//purchase coupon
 @RestController
 @RequestMapping("/api/customer")
 @RequiredArgsConstructor

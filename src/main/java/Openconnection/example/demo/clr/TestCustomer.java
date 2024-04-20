@@ -89,15 +89,17 @@ public class TestCustomer implements CommandLineRunner {
             customerService.getAllCustomers().forEach(System.out::println);
 
             System.out.println("got into the delete section");
-            customerService.deleteCustomer(3);
+            customerService.deleteCustomer(5);
             System.out.println("Customer with id " + 3 + " deleted successfully.");
 
 
             couponService.addCouponPurchase(1, 1);
             couponService.addCouponPurchase(2, 2);
+            couponService.addCouponPurchase(3, 3);
+            couponService.addCouponPurchase(3, 2);
             couponService.addCouponPurchase(4, 4);
             couponService.addCouponPurchase(5, 5);
-            couponService.addCouponPurchase(5, 1);
+            couponService.addCouponPurchase(5, 5);
 
             System.out.println("========== Printing all customers after Delete ==========\n");
             customerService.getAllCustomers().forEach(System.out::println);

@@ -7,9 +7,11 @@ import Openconnection.example.demo.Service.CompanyService;
 import Openconnection.example.demo.beans.Category;
 import Openconnection.example.demo.beans.Company;
 import Openconnection.example.demo.beans.Coupon;
+import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,6 +30,26 @@ public class CompanyController {
         return company;
     }
 
+    //    @DeleteMapping("/{id}")
+//    @ResponseStatus(HttpStatus.NO_CONTENT)
+//    public void deleteCompany(@PathVariable int id) throws CompanyNotFoundException, CouponNotFoundException {
+//        companyService.deleteCompany(id);
+//    }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteCompany(@PathVariable int id) {
+        try {
+            companyService.deleteCompany(id);
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Company deleted successfully");
+        } catch (CompanyNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Company not found");
+        } catch (CouponNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to delete company");
+        }
+    }
+
+
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public Company updateCompany(@PathVariable int id, @RequestBody Company company) throws CompanyNotFoundException {
@@ -36,11 +58,6 @@ public class CompanyController {
         return company;
     }
 
-    @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteCompany(@PathVariable int id) throws CompanyNotFoundException, CouponNotFoundException {
-        companyService.deleteCompany(id);
-    }
 
     @GetMapping("/all")
     public List<Company> getAllCompanies() {

@@ -7,6 +7,8 @@ import Openconnection.example.demo.beans.Company;
 import Openconnection.example.demo.beans.Customer;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -40,11 +42,23 @@ public class AdminController {
         }
     }
 
+//    @DeleteMapping("/companies/{companyId}")
+//    public String deleteCompany(@PathVariable int companyId) {
+//        adminService.deleteCompany(companyId);
+//        return "Company deleted successfully!";
+//    }
+
     @DeleteMapping("/companies/{companyId}")
-    public String deleteCompany(@PathVariable int companyId) {
-        adminService.deleteCompany(companyId);
-        return "Company deleted successfully!";
+    public ResponseEntity<String> deleteCompany(@PathVariable int companyId) {
+        try {
+            adminService.deleteCompany(companyId);
+            return ResponseEntity.ok("Company deleted successfully!");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Failed to delete company: " + e.getMessage());
+        }
     }
+
 
     @GetMapping("/companies")
     public List<Company> getAllCompanies(@RequestHeader(name = "Autorotation") String token) {
