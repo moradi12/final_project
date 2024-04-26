@@ -19,10 +19,10 @@ public class GuestController {
     public List<Coupon> getCouponsByCompany(@PathVariable Integer companyId) throws CouponNotFoundException {
         return guestService.searchCouponsByCompany(companyId);
     }
-    @GetMapping("/coupon/title/{title}")
-    public Coupon getCouponByTitle(@PathVariable String title) throws CouponNotFoundException {
-        return guestService.searchCouponByTitle(title);
-    }
+//    @GetMapping("/coupon/title/{title}")
+//    public Coupon getCouponByTitle(@PathVariable String title) throws CouponNotFoundException {
+//        return guestService.searchCouponByTitle(title);
+//    }
 
     @GetMapping("/coupons/expired")
     public List<Coupon> getExpiredCoupons(@RequestParam Date endDate) throws CouponNotFoundException {

@@ -94,14 +94,14 @@ public class CompanyController {
         companyService.addCoupon(coupon);
     }
 
-    @PutMapping("/{companyId}/coupons/{couponId}")
-    @ResponseStatus(HttpStatus.OK)
-    public void updateCoupon(@PathVariable int companyId, @PathVariable int couponId,
-                             @RequestBody Coupon coupon) throws CouponNotFoundException {
-        coupon.setId(couponId);
-        coupon.setCompanyId(companyId);
-        companyService.updateCoupon(coupon);
-    }
+//    @PutMapping("/{companyId}/coupons/{couponId}")
+//    @ResponseStatus(HttpStatus.OK)
+//    public void updateCoupon(@PathVariable int companyId, @PathVariable int couponId,
+//                             @RequestBody Coupon coupon) throws CouponNotFoundException {
+//        coupon.setId(couponId);
+//        coupon.setCompanyId(companyId);
+//        companyService.updateCoupon(coupon);
+//    }
 
     @DeleteMapping("/{companyId}/coupons/{couponId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
