@@ -1,15 +1,12 @@
 package Openconnection.example.demo.Controllers;
 
-import Openconnection.example.demo.Exceptions.CompanyAlreadyExistsException;
 import Openconnection.example.demo.Exceptions.CompanyNotFoundException;
 import Openconnection.example.demo.Exceptions.CouponNotFoundException;
 import Openconnection.example.demo.Service.CompanyService;
 import Openconnection.example.demo.beans.Category;
 import Openconnection.example.demo.beans.Company;
 import Openconnection.example.demo.beans.Coupon;
-import jakarta.validation.ConstraintViolationException;
-import lombok.RequiredArgsConstructor;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,50 +15,60 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/companies")
-@RequiredArgsConstructor
+@RequestMapping("/companies")
 public class CompanyController {
-    private final CompanyService companyService;
+
+    @Autowired
+    private CompanyService companyService;
 
     @PostMapping("/add")
-    @ResponseStatus(HttpStatus.CREATED)
-    public Company addCompany(@RequestBody Company company) throws CompanyAlreadyExistsException {
-        companyService.addCompany(company);
-        return company;
-    }
-
-    //    @DeleteMapping("/{id}")
-//    @ResponseStatus(HttpStatus.NO_CONTENT)
-//    public void deleteCompany(@PathVariable int id) throws CompanyNotFoundException, CouponNotFoundException {
-//        companyService.deleteCompany(id);
-//    }
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteCompany(@PathVariable int id) {
+    public ResponseEntity<?> addCompany(@RequestBody Company company) {
         try {
-            companyService.deleteCompany(id);
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Company deleted successfully");
-        } catch (CompanyNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Company not found");
-        } catch (CouponNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+            companyService.addCompany(company);
+            return ResponseEntity.ok("Company added successfully");
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to delete company");
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
+    @DeleteMapping("/{companyId}")
+    public ResponseEntity<?> deleteCompany(@PathVariable int companyId) {
+        try {
+            companyService.deleteCompany(companyId);
+            return ResponseEntity.ok("Company deleted successfully");
+        } catch (CompanyNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (CouponNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/forceDelete/{companyId}")
+    public ResponseEntity<?> forceDeleteCompany(@PathVariable int companyId) {
+        try {
+            companyService.forceDeleteCompany(companyId);
+            return ResponseEntity.ok("Company and all associated coupons forcefully deleted");
+        } catch (CompanyNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<?> getAllCompanies() {
+        try {
+            return ResponseEntity.ok(companyService.getAllCompanies());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error retrieving companies: " + e.getMessage());
+        }
+    }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Company updateCompany(@PathVariable int id, @RequestBody Company company) throws CompanyNotFoundException {
+    public Company updateCompany(@PathVariable int id, @RequestBody Company company) throws
+            CompanyNotFoundException {
         company.setId(id);
         companyService.updateCompany(company);
         return company;
-    }
-
-
-    @GetMapping("/all")
-    public List<Company> getAllCompanies() {
-        return companyService.getAllCompanies();
     }
 
     @GetMapping("/{id}")
@@ -75,7 +82,8 @@ public class CompanyController {
     }
 
     @GetMapping("/{id}/coupons/category/{category}")
-    public List<Coupon> getCompanyCouponsByCategory(@PathVariable int id, @PathVariable Category category) throws CompanyNotFoundException {
+    public List<Coupon> getCompanyCouponsByCategory(@PathVariable int id, @PathVariable Category category) throws
+            CompanyNotFoundException {
         return companyService.getCompanyCouponsByCategory(id, category);
     }
 
@@ -88,7 +96,8 @@ public class CompanyController {
 
     @PutMapping("/{companyId}/coupons/{couponId}")
     @ResponseStatus(HttpStatus.OK)
-    public void updateCoupon(@PathVariable int companyId, @PathVariable int couponId, @RequestBody Coupon coupon) throws CouponNotFoundException {
+    public void updateCoupon(@PathVariable int companyId, @PathVariable int couponId,
+                             @RequestBody Coupon coupon) throws CouponNotFoundException {
         coupon.setId(couponId);
         coupon.setCompanyId(companyId);
         companyService.updateCoupon(coupon);
@@ -96,12 +105,18 @@ public class CompanyController {
 
     @DeleteMapping("/{companyId}/coupons/{couponId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteCoupon(@PathVariable int companyId, @PathVariable int couponId) throws CouponNotFoundException {
-        companyService.deleteCoupon(couponId);
+    public ResponseEntity<?> deleteCoupon(@PathVariable int companyId, @PathVariable int couponId) {
+        try {
+            companyService.deleteCoupon(couponId);
+            return ResponseEntity.ok("Coupon deleted successfully");
+        } catch (CouponNotFoundException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @GetMapping("/{companyId}/coupons/{couponId}")
-    public Coupon getCouponById(@PathVariable int companyId, @PathVariable int couponId) throws CouponNotFoundException {
+    public Coupon getCouponById(@PathVariable int companyId, @PathVariable int couponId) throws
+            CouponNotFoundException {
         return companyService.getCouponById(couponId);
     }
 }

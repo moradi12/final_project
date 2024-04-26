@@ -1,5 +1,9 @@
 package Openconnection.example.demo.clr;
 
+import Openconnection.example.demo.Exceptions.CompanyAlreadyExistsException;
+import Openconnection.example.demo.Exceptions.CompanyNotFoundException;
+import Openconnection.example.demo.Exceptions.CouponNotFoundException;
+import Openconnection.example.demo.Exceptions.ErrMsg;
 import Openconnection.example.demo.Service.CompanyService;
 import Openconnection.example.demo.Service.CouponService;
 import Openconnection.example.demo.beans.Category;
@@ -184,28 +188,54 @@ public class TestCompany implements CommandLineRunner {
             System.out.println(couponService.getOneCoupon(3));
             System.out.println(couponService.getOneCoupon(5));
 
-
-//            Coupon retrievedCoupon1 = couponService.getOneCoupon(1);
-//            Coupon retrievedCoupon2 = couponService.getOneCoupon(2);
-//            Coupon retrievedCoupon3 = couponService.getOneCoupon(3);
-//            Coupon retrievedCoupon5 = couponService.getOneCoupon(5);
-//
-//            System.out.println("Retrieved Coupon 1: " + retrievedCoupon1);
-//            System.out.println("Retrieved Coupon 2: " + retrievedCoupon2);
-//            System.out.println("Retrieved Coupon 3: " + retrievedCoupon3);
-//            System.out.println("Retrieved Coupon 5: " + retrievedCoupon5);
             try {
-            companyService.deleteCompany(4);
-            System.out.println("Deleting company with ID " + company4.getId() + "");
-            } catch (Exception e) {
-                System.out.println("Error occurred while deleting company: " + e.getMessage());
-            }
-            System.out.println();
+                System.out.println("Printing Company coupons@##########################");
+                System.out.println();
+                System.out.println(companyService.getOneCompany(1));
+                System.out.println();
+                System.out.println("Coupons"+company1);
+                System.out.println();
 
-            System.out.println("Remaining Companies:");
-            companyService.getAllCompanies().forEach(company -> System.out.println(company + "\n"));
-        } catch (Exception e) {
-            System.out.println("Error occurred:" + e.getMessage());
+
+                System.out.println("TIme To Delete Company 4 Not By Force");
+                System.out.println();
+
+                int companyIdToDelete = 4; // שנה כאן למספר הרצוי
+                try {
+                    System.out.println("Attempting to delete company with ID: " + companyIdToDelete);
+                    companyService.deleteCompany(companyIdToDelete);
+                    System.out.println();
+
+                    System.out.println("Company with ID " + companyIdToDelete + " deleted successfully.");
+
+                } catch (Exception e) {
+                    System.out.println("Failed to delete company with ID " + companyIdToDelete + ": " + e.getMessage());
+                }
+
+                System.out.println();
+                int companyIdToForceDelete = 2;
+                System.out.println();
+                try {
+                    System.out.println("Attempting to forcefully delete company with ID: " + companyIdToForceDelete);
+                    companyService.forceDeleteCompany(companyIdToForceDelete);
+                    System.out.println("Company with ID " + companyIdToForceDelete + " and all its coupons forcefully deleted.");
+                } catch (Exception e) {
+                    System.out.println("Failed to forcefully delete company with ID " + companyIdToForceDelete + ": " + e.getMessage());
+                }
+
+            } catch (Exception e) {
+                System.out.println("Error occurred:" + e.getMessage());
+            }
+        } catch (CompanyAlreadyExistsException | CouponNotFoundException | CompanyNotFoundException e) {
+            String errorMessage;
+            if (e instanceof CompanyAlreadyExistsException) {
+                errorMessage = ErrMsg.COMPANY_ALREADY_EXISTS.getMsg();
+            } else if (e instanceof CouponNotFoundException) {
+                errorMessage = ErrMsg.COUPON_NOT_FOUND.getMsg();
+            } else {
+                errorMessage = ErrMsg.COMPANY_NOT_FOUND.getMsg();
+            }
+            throw new RuntimeException(errorMessage, e);
         }
     }
 }

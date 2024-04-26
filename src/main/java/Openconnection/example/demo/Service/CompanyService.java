@@ -202,26 +202,25 @@ public class CompanyService {
 
 
     public void deleteCompany(int companyId) throws CompanyNotFoundException, CouponNotFoundException {
-//        Company company = companyRepository.findById(companyId)
-//                .orElseThrow(() -> new CompanyNotFoundException(ErrMsg.COMPANY_NOT_FOUND.getMsg()));
-//        List<Customer> customersWithCoupons = customerRepository.findByCouponsCompanyId(companyId);
-//        if (!customersWithCoupons.isEmpty()) {
-//            throw new CouponNotFoundException("Cannot delete company with ID " + companyId +
-//                    ". Customers have purchased coupons from this company.");
-//        }
-//        List<Coupon> companyCoupons = couponRepository.findByCompanyId(companyId);
-//        if (!companyCoupons.isEmpty()) {
-//            throw new CouponNotFoundException("Cannot delete company with ID " + companyId +
-//                    ". There are coupons associated with this company.");
-//        }
-        if (companyRepository.existsById(companyId)) {
-            companyRepository.deleteById(companyId);
-        } else {
-            throw new CompanyNotFoundException(ErrMsg.COMPANY_NOT_FOUND.getMsg());
+        Company company = companyRepository.findById(companyId)
+                .orElseThrow(() -> new CompanyNotFoundException(ErrMsg.COMPANY_NOT_FOUND.getMsg()));
+        List<Coupon> companyCoupons = couponRepository.findByCompanyId(companyId);
+        if (!companyCoupons.isEmpty()) {
+            throw new CouponNotFoundException("Cannot delete company with ID " + companyId +
+                    ". There are coupons associated with this company.");
         }
+        companyRepository.deleteById(companyId);
         System.out.println("Company deleted with ID: " + companyId);
     }
-
+    
+    public void forceDeleteCompany(int companyId) throws CompanyNotFoundException {
+        Company company = companyRepository.findById(companyId)
+                .orElseThrow(() -> new CompanyNotFoundException(ErrMsg.COMPANY_NOT_FOUND.getMsg()));
+        List<Coupon> companyCoupons = couponRepository.findByCompanyId(companyId);
+        companyCoupons.forEach(coupon -> couponRepository.delete(coupon));
+        companyRepository.deleteById(companyId);
+        System.out.println("Company and all associated coupons forcefully deleted with ID: " + companyId);
+    }
 
     public List<Company> getAllCompanies() {
         return companyRepository.findAll();
