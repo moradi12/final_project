@@ -82,8 +82,8 @@ public class TestCompany implements CommandLineRunner {
                     .Id(1)
                     .companyId(1)
                     .category(Category.Food)
-                    .description("50% off on electronics")
-                    .title("Electronics Sale")
+                    .description("50% off on Food")
+                    .title("Food Sale")
                     .startDate(Date.valueOf("2024-03-12"))
                     .endDate(Date.valueOf("2024-03-31"))
                     .available(30)
@@ -166,6 +166,7 @@ public class TestCompany implements CommandLineRunner {
             companyService.addCoupon(coupon3);
             companyService.addCoupon(coupon4);
             companyService.addCoupon(coupon5);
+
             System.out.println("Coupons added successfully\n");
 
             // Update company
@@ -180,6 +181,7 @@ public class TestCompany implements CommandLineRunner {
             System.out.println("Company updated successfully\n");
 
             couponService.getOneCoupon(1);
+            couponService.getOneCoupon(2);
             couponService.getOneCoupon(3);
             couponService.getOneCoupon(4);
             couponService.getOneCoupon(5);
@@ -191,9 +193,9 @@ public class TestCompany implements CommandLineRunner {
             try {
                 System.out.println("Printing Company coupons@##########################");
                 System.out.println();
-                System.out.println(companyService.getOneCompany(1));
+             //   System.out.println(companyService.getOneCompany(1));
                 System.out.println();
-                System.out.println("Coupons"+company1);
+               // System.out.println("Coupons"+company1);
                 System.out.println();
 
 
@@ -213,7 +215,7 @@ public class TestCompany implements CommandLineRunner {
                 }
 
                 System.out.println();
-                int companyIdToForceDelete = 2;
+                int companyIdToForceDelete = 5;
                 System.out.println();
                 try {
                     System.out.println("Attempting to forcefully delete company with ID: " + companyIdToForceDelete);
