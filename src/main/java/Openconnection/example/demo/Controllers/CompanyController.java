@@ -76,10 +76,10 @@ public class CompanyController {
         return companyService.getOneCompany(id);
     }
 
-    @GetMapping("/{id}/coupons")
-    public List<Coupon> getCompanyCouponsById(@PathVariable int id) throws CompanyNotFoundException {
-        return companyService.getCompanyCoupons();
-    }
+    // @GetMapping("/{id}/coupons")
+    // public List<Coupon> getCompanyCouponsById(@PathVariable int id) throws CompanyNotFoundException {
+    //     return companyService.getCompanyCoupons();
+    // }
 
     @GetMapping("/{id}/coupons/category/{category}")
     public List<Coupon> getCompanyCouponsByCategory(@PathVariable int id, @PathVariable Category category) throws
